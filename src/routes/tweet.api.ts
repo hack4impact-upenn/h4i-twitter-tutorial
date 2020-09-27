@@ -53,6 +53,9 @@ router.delete('/:tweetId/delete', auth, async (req, res) => {
 // get all tweet
 router.get('/', (_, res) => {
   Tweet.find({})
+    .sort({
+      timestamp: 'desc',
+    })
     .then((data) => res.status(200).json({ success: true, data }))
     .catch((e) => errorHandler(res, e));
 });
