@@ -8,6 +8,7 @@ import connectToDatabase from './utils/mongo';
 import './utils/config';
 
 import userRouter from './routes/user.api';
+import tweetRouter from './routes/tweet.api';
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.use(cors());
 
 // API Routes
 app.use('/api/users', userRouter);
+// Tutorial: Create Add Tweet Router
+app.use('/api/tweet', tweetRouter);
 
 // Serving static files
 if (process.env.NODE_ENV === 'production') {
