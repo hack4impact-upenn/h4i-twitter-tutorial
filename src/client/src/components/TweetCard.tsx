@@ -15,13 +15,11 @@ const TweetCard = ({ tweet }: { tweet: ITweet }) => {
   };
 
   return (
-    <div className="card">
+    <div className="card" style={{ margin: '20px 0px' }}>
       <div className="card-content">
         <div className="media-content">
-          <p className="title is-4">{tweet.username}</p>
-          <p className="subtitle is-6">
-            <small>{renderTimestamp(Date.parse(tweet.timestamp))}</small>
-          </p>
+          <span className="title is-4">{tweet.username} </span>
+          <small>{renderTimestamp(Date.parse(tweet.timestamp))} ago</small>
         </div>
         <div className="content">{tweet.text}</div>
       </div>

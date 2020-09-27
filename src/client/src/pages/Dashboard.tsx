@@ -1,8 +1,9 @@
 import React from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import styled from 'styled-components';
 import auth from '../api/core/auth';
 import { fetchMe } from '../api/userApi';
+import { fetchTweets, createTweet } from '../api/tweetApi';
 import Sidebar from '../components/Sidebar';
 import TweetCard from '../components/TweetCard';
 import { Field, Form, Formik } from 'formik';
@@ -35,30 +36,44 @@ interface MyProfileResponse extends IAPIResponse {
   };
 }
 
-const tweet = [
-  {
-    _id: '1',
-    timestamp: '2018/2/3',
-    userId: '123',
-    username: 'John Smith',
-    text: 'Hello',
-  },
-];
-
 const initialValues = {
   text: '',
 };
 
+const queryConfigs = {
+  refetchOnWindowFocus: false,
+};
+
 const Dashboard = () => {
+  const tweetsQuery = useQuery(
+    ['fetchTweets', { accessToken: auth.getAccessToken() }],
+    fetchTweets,
+    queryConfigs
+  );
+
   const profileQuery = useQuery(
     ['fetchMe', { accessToken: auth.getAccessToken() }],
     fetchMe,
-    {
-      refetchOnWindowFocus: false,
-    }
+    queryConfigs
   );
 
-  const handleSubmit = async (values: any) => {};
+  const [tweetMutate] = useMutation(createTweet);
+
+  const handleSubmit = async (
+    { text }: { text: string },
+    { resetForm }: { resetForm: any }
+  ) => {
+    try {
+      await tweetMutate({
+        accessToken: auth.getAccessToken(),
+        text,
+      });
+      tweetsQuery.refetch();
+      resetForm();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const MyProfile = (res: MyProfileResponse) => {
     const { data: myProfile } = res;
@@ -67,6 +82,16 @@ const Dashboard = () => {
         <h3 className="title is-3">
           Hey {myProfile.firstName}! Welcome to Tweet4Impact.
         </h3>
+      </div>
+    );
+  };
+
+  const TweetsFeed = (res: ITweet[]) => {
+    return (
+      <div style={{ width: '60%' }}>
+        {res.map((tweet: ITweet) => (
+          <TweetCard key={tweet._id} tweet={tweet} />
+        ))}
       </div>
     );
   };
@@ -88,7 +113,6 @@ const Dashboard = () => {
                 placeholder="What's happening now?"
                 style={{ margin: '10px 0px' }}
               />
-
               <Button
                 className="button is-primary is-light is-outlined"
                 type="submit"
@@ -99,11 +123,7 @@ const Dashboard = () => {
           </Formik>
         </FormContainer>
 
-        <div style={{ width: '60%' }}>
-          {tweet.map((tweet: ITweet) => (
-            <TweetCard tweet={tweet} />
-          ))}
-        </div>
+        {tweetsQuery.data && TweetsFeed(tweetsQuery.data as any)}
       </ContentContainer>
     </FlexContainer>
   );
