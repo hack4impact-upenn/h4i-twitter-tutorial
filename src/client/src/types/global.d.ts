@@ -17,3 +17,11 @@ declare interface IUserLogin {
 interface IAPIResponse {
   success: boolean;
 }
+
+declare interface ITweet {
+  _id: string;
+  timestamp: string;
+  userId: string;
+  username: string;
+  text: string;
+}
