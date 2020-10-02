@@ -1,5 +1,5 @@
+import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
-import { parseISO, formatDistanceToNow } from 'date-fns';
 
 const TweetCard = ({ tweet }: { tweet: ITweet }) => {
   const renderTimestamp = (date: number | Date) => {
