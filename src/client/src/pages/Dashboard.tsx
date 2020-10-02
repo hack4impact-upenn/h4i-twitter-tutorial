@@ -11,6 +11,17 @@ const FlexContainer = styled.div`
 
 const ContentContainer = styled.div`
   margin: 5%;
+  width: 60%;
+`;
+
+const FormContainer = styled.div`
+  width: 60%;
+  margin: 20px 0px;
+`;
+
+const Button = styled.button`
+  margin: 5px 0px;
+  width: 150px;
 `;
 
 interface MyProfileResponse extends IAPIResponse {
